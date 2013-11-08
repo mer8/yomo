@@ -1,0 +1,7 @@
+<%= form_for @video do |v| %>
+	Title: <%= v.text_field :title %>
+	Link: <%= v.text_field :link %> 
+	Length: <%= v.text_field :length %> 
+
+	<%= v.submit %>
+<% end %>

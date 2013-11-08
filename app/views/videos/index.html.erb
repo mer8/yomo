@@ -1,0 +1,9 @@
+<table>
+<% @videos.each do |video| %>
+	<tr>
+		<td><%= video.title %></td>
+		<td><%= video.link %></td>
+		<td><%= video.length.to_s %></td>
+	</tr>
+<% end %>
+</table>
