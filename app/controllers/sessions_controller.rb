@@ -14,6 +14,8 @@ class SessionsController < ApplicationController
     if user.save
       session[:user_id] = user.id
       session[:access_token] = auth["credentials"]["token"]
+      session[:refresh_token] = auth["credentials"]["refresh_token"]
+
       notice = "Signed in!"
       logger.debug "URL to redirect to: #{url}"
       redirect_to url, :notice => notice
@@ -43,8 +45,8 @@ class SessionsController < ApplicationController
     opts = Trollop::options do
       opt :metrics, 'Report metrics', :type => String, :default => 'views,comments,favoritesAdded,favoritesRemoved,likes,dislikes,shares'
       opt :dimensions, 'Report dimensions', :type => String, :default => 'video'
-      opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => 'one_week_ago'
-      opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => 'one_day_ago'
+      opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2012-01-01'
+      opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
       opt 'start-index', 'Start index', :type => :int, :default => 1
       opt 'max-results', 'Max results', :type => :int, :default => 10
       opt :sort, 'Sort order', :type => String, :default => '-views'
@@ -57,24 +59,36 @@ class SessionsController < ApplicationController
     youtube_analytics = client.discovered_api(@YOUTUBE_ANALYTICS_API_SERVICE_NAME,
       @YOUTUBE_ANALYTICS_API_VERSION)
 
+    require 'google/api_client/client_secrets'
+    client.authorization = Google::APIClient::ClientSecrets.load('app/controllers/client_secrets.json').to_authorization
+
     # Initialize OAuth 2.0 client    
       client.authorization.client_id = '434092699375.apps.googleusercontent.com'
       client.authorization.client_secret = 'or1NmEWn2QOmObdok9No6jcV'
-      client.authorization.access_token = session[:access_token]
+      # client.authorization.access_token = session[:access_token]
       client.authorization.redirect_uri = 'http://localhost:3000/auth/google_oauth2/callback'
+
       client.authorization.scope = 'https://www.googleapis.com/auth/youtube.readonly',
       'https://www.googleapis.com/auth/yt-analytics.readonly'
 
+      client.authorization.update_token!(
+        access_token: session[:access_token]
+        # refresh_token: session[:refresh_token]
+        )
+
       # Request authorization
-      redirect_uri = client.authorization.authorization_uri
+      # redirect_uri = client.authorization.authorization_uri
 
     # Delete the following two lines in future if possible. We have already autheniticated using Google OAuth 2. 
     # auth_util = CommandLineOAuthHelper.new(@YOUTUBE_SCOPES)
     # client.authorization = auth_util.authorize()
 
     # Wait for authorization code then exchange for token
-      client.authorization.code = '...'
-      client.authorization.fetch_access_token!
+      # client.authorization.code = '...'
+      # client.authorization.fetch_access_token!
+    # client = Google::APIClient.new
+
+    # client.authorization = service_account.authorize
 
     channels_response = client.execute!(
       :api_method => youtube.channels.list,
