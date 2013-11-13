@@ -68,12 +68,12 @@ class SessionsController < ApplicationController
       # client.authorization.access_token = session[:access_token]
       client.authorization.redirect_uri = 'http://localhost:3000/auth/google_oauth2/callback'
 
-      client.authorization.scope = 'https://www.googleapis.com/auth/youtube.readonly',
-      'https://www.googleapis.com/auth/yt-analytics.readonly'
+      client.authorization.scope = 'https://www.googleapis.com/auth/youtube.readonly', # may not be necessary
+      'https://www.googleapis.com/auth/yt-analytics.readonly' # may not be necessary
 
       client.authorization.update_token!(
-        access_token: session[:access_token]
-        # refresh_token: session[:refresh_token]
+        access_token: session[:access_token],
+        refresh_token: session[:refresh_token] # may not be necessary
         )
 
       # Request authorization
