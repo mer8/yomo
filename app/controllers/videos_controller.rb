@@ -1,7 +1,6 @@
 class VideosController < ApplicationController
 	def index
 		@videos = Video.all
-		@analytics = Video.fuck()
 	end
 
 	def new
