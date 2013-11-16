@@ -43,12 +43,13 @@ class SessionsController < ApplicationController
     # one_week_ago = Time.at(now - SECONDS_IN_WEEK).strftime('%Y-%m-%d')
 
     opts = Trollop::options do
-      opt :metrics, 'Report metrics', :type => String, :default => 'views,comments,favoritesAdded,favoritesRemoved,likes,dislikes,shares'
-      opt :dimensions, 'Report dimensions', :type => String, :default => 'video'
-      opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2012-01-01'
+      opt :metrics, 'Report metrics', :type => String, :default => 'views'
+      opt :dimensions, 'Report dimensions', :type => String, :default => 'insightTrafficSourceDetail'
+      opt :filters, 'Report filters', :type => String, :default => 'video==ueItDRlbwQg;insightTrafficSourceType==EXT_URL'
+      opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2011-01-01'
       opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
       opt 'start-index', 'Start index', :type => :int, :default => 1
-      opt 'max-results', 'Max results', :type => :int, :default => 10
+      opt 'max-results', 'Max results', :type => :int, :default => 25
       opt :sort, 'Sort order', :type => String, :default => '-views'
     end
 
@@ -65,7 +66,6 @@ class SessionsController < ApplicationController
     # Initialize OAuth 2.0 client    
       client.authorization.client_id = '434092699375.apps.googleusercontent.com'
       client.authorization.client_secret = 'or1NmEWn2QOmObdok9No6jcV'
-      # client.authorization.access_token = session[:access_token]
       client.authorization.redirect_uri = 'http://localhost:3000/auth/google_oauth2/callback'
 
       client.authorization.scope = 'https://www.googleapis.com/auth/youtube.readonly', # may not be necessary
@@ -75,21 +75,18 @@ class SessionsController < ApplicationController
         access_token: session[:access_token],
         refresh_token: session[:refresh_token] # may not be necessary
         )
+    # Iterate through array to get video ID's
+    channels_response = client.execute!(
+      :api_method => youtube.channels.list,
+      :parameters => {
+        :mine => true,
+        :part => 'id'
+      }
+    )
 
-      # Request authorization
-      # redirect_uri = client.authorization.authorization_uri
-
-    # Delete the following two lines in future if possible. We have already autheniticated using Google OAuth 2. 
-    # auth_util = CommandLineOAuthHelper.new(@YOUTUBE_SCOPES)
-    # client.authorization = auth_util.authorize()
-
-    # Wait for authorization code then exchange for token
-      # client.authorization.code = '...'
-      # client.authorization.fetch_access_token!
-    # client = Google::APIClient.new
-
-    # client.authorization = service_account.authorize
-
+    @ids = channels_response.data.items
+    
+    # Traffic from Facebook
     channels_response = client.execute!(
       :api_method => youtube.channels.list,
       :parameters => {
@@ -106,20 +103,36 @@ class SessionsController < ApplicationController
         :parameters => opts
       )
 
-      puts "Analytics Data for Channel #{channel.id}"
-
-      analytics_response.data.columnHeaders.each do |column_header|
-        printf '%-20s', column_header.name
+      data = analytics_response.data.rows.select do |e| 
+        e[0]=~/^(https?:\/\/)?(?:www\.)?(?:facebook)?(?:\.com)?$/
       end
-      puts
+      result= data.flatten
+      @facebook = result.map {|x| Integer(x) rescue nil }.compact.sum
 
-      # analytics_response.data.rows.each do |row|
-      #   row.each do |value|
-      #     printf '%-20s', value
-      #   end
-      #   puts
-      # end
-      @data = analytics_response.data.rows
-    end
+    # Traffic from Twitter
+    channels_response = client.execute!(
+      :api_method => youtube.channels.list,
+      :parameters => {
+        :mine => true,
+        :part => 'id'
+      }
+    )
+
+    channels_response.data.items.each do |channel|
+      opts[:ids] = "channel==#{channel.id}"
+
+      analytics_response = client.execute!(
+        :api_method => youtube_analytics.reports.query,
+        :parameters => opts
+      )
+
+      data = analytics_response.data.rows.select do |e| 
+        e[0]=~/^(https?:\/\/)?(?:www\.)?(?:youtu.be)?(?:\.com)?$/
+      end
+      result= data.flatten
+      @twitter = result.map {|x| Integer(x) rescue nil }.compact.sum
+     end  
+   
   end
+end
 end
