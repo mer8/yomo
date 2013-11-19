@@ -91,6 +91,7 @@ input:focus + header {
 h1 {
   font-size:2rem;
   font-weight:200;
+  margin-top: auto;
 }
 
 h2 {
@@ -101,16 +102,11 @@ h2 {
 }
 
 .thumbnails {
-  margin:.5rem 0 0 -1.5rem;
+  margin:0 0 1rem;
 }
 
 img{
-	100%;
-}
-
-.swiperight {
-background: yellow;
-border: lime solid 5px;
+	width:100%;
 }
 
 </style>
@@ -119,12 +115,15 @@ border: lime solid 5px;
 <input placeholder="Search, or say Google" x-webkit-speech autocomplete="off" />
 
 <header></header>
-  
 
 	<% for i in @youtubeDataAPI %>
 	<section class="card">
-		<div class="thumbnails"><a href = "<%= i["url"] %>"><%= image_tag(i["thumbnails"]) %></a></div>
+
 		<h1><%= i["title"] %></h1>
+
+		<div class="thumbnails">
+			<a href = "<%= i["url"] %>"><%= image_tag(i["thumbnails"]) %></a>
+		</div>
 		<h2><a href = "<%= i["url"] %>"><%= i["url"] %></a></h2>
 		<h2>Total Views: <%= i["totalViews"] %></h2>
 		<h2>Average View Duration: <%= i["averageViewDuration"] %></h2>
@@ -133,17 +132,13 @@ border: lime solid 5px;
 		<h2>Traffic from Twitter: <%= i["twitterViews"] %></h2>
 	</section>
 	<%end%>
-	
+
 <script>
-$(function(){
-    // Bind the swiperightHandler callback function to the swipe event on div.box
-  $( ".thumbnails" ).on( "swiperight", swiperightHandler );
- 
-  // Callback function references the event target and adds the 'swiperight' class to it
-  function swiperightHandler( event ){
-    $( event.target ).addClass( "swiperight" );
+$(".card").swipe({
+  swipeRight:function(event, direction, distance, duration, fingerCount) {
+    $(this).text("klasdflg" );
   }
 });
 </script>
-  
+	
 </main>
