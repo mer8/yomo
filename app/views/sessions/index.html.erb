@@ -67,6 +67,7 @@ input:focus + header {
   user-select:none;
   animation:fly-in-from-left .5s 1s ease both;
   transform-origin:top left;
+  display: block;
 }
 .card:nth-child(even){
   animation-name:fly-in-from-right;
@@ -137,6 +138,11 @@ button{
   margin-top: 1rem;
 }
 
+.swiperight{
+  display:none;
+  background-color: #B5F7E7
+}
+
 </style>
 <main>
 
@@ -145,7 +151,7 @@ button{
 <header></header>
 
 	<% for i in @youtubeDataAPI %>
-	<section class="card">
+	<section class="card" id="<%= "vid" +  i['id']%>">
 
 		<h1><%= i["title"] %></h1>
 
@@ -159,15 +165,31 @@ button{
 		<h2>Traffic from Facebook: <%= i["facebookViews"] %></h2>
 		<h2>Traffic from Twitter: <%= i["twitterViews"] %></h2>
 	</section>
+
+  <div class="swiperight" id="<%= "eml" +  i['id']%>">
+  <input type="text" class="email" value="" placeholder="To:"><input type="text" class="email" value="" placeholder="Subject:"><textarea name="comment" class="email emailBody">Just wanted to update you on <%= i["title"] %>. \n\nPlease see below for the most current stats:\n\nTotal Views: <%= i["totalViews"] %>\nAverage View Duration: <%= i["averageViewDuration"] %>\nAverage View Percentage: <%= i["averageViewPercentage"] %>\nTraffic from Facebook: <%= i["facebookViews"] %>\nTraffic from Twitter: <%= i["twitterViews"] %></textarea><button id="Send">Send</button>
+  </div>
+
 	<%end%>
 
+
+
 <script>
-$(".card").swipe({
-  swipeLeft:function() {
-    $(this).html('<input type="text" class="email" value="" placeholder="To:"><input type="text" class="email" value="" placeholder="Subject:"><textarea name="comment" class="email emailBody">Just wanted to update you on <%= i["title"] %>. \n\nPlease see below for the most current stats:\n\nTotal Views: <%= i["totalViews"] %>\nAverage View Duration: <%= i["averageViewDuration"] %>\nAverage View Percentage: <%= i["averageViewPercentage"] %>\nTraffic from Facebook: <%= i["facebookViews"] %>\nTraffic from Twitter: <%= i["twitterViews"] %></textarea><button id="Send">Send</button>');
-    $(this).css("background-color", "#B5F7E7");
-  }
-});
+
+$(function(){})
+  $(".card").swipe({
+    swipeLeft:function() {
+      $(this).css("display", "none");
+      $('#eml' + $(this).attr("id").substring(3,999)).css("display", "block");
+    }
+  });
+  $(".swiperight").swipe({
+    swipeRight:function() {
+      $(this).css("display", "none");
+      $('#vid' + $(this).attr("id").substring(3,999)).css("display", "block"); 
+    }
+  });
+
 </script>
 	
 </main>
