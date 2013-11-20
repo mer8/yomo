@@ -37,20 +37,6 @@ class SessionsController < ApplicationController
     @YOUTUBE_ANALYTICS_API_SERVICE_NAME = 'youtubeAnalytics'
     @YOUTUBE_ANALYTICS_API_VERSION = 'v1'
     now = Time.new.to_i
-    # SECONDS_IN_DAY = 60 * 60 * 24
-    # SECONDS_IN_WEEK = SECONDS_IN_DAY * 7
-    # one_day_ago = Time.at(now - SECONDS_IN_DAY).strftime('%Y-%m-%d')
-    # one_week_ago = Time.at(now - SECONDS_IN_WEEK).strftime('%Y-%m-%d')
-
-    vopts = Trollop::options do
-      opt :metrics, 'Report metrics', :type => String, :default => 'views'
-      opt :dimensions, 'Report dimensions', :type => String, :default => 'video'
-      opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2012-01-01'
-      opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
-      opt 'start-index', 'Start index', :type => :int, :default => 1
-      opt 'max-results', 'Max results', :type => :int, :default => 10
-      opt :sort, 'Sort order', :type => String, :default => '-views'
-    end
 
     opts = Trollop::options do
       opt :metrics, 'Report metrics', :type => String, :default => 'views'
@@ -59,19 +45,19 @@ class SessionsController < ApplicationController
       opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2011-01-01'
       opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
       opt 'start-index', 'Start index', :type => :int, :default => 1
-      opt 'max-results', 'Max results', :type => :int, :default => 25
+      opt 'max-results', 'Max results', :type => :int, :default => 5
       opt :sort, 'Sort order', :type => String, :default => '-views'
     end
     @opts = opts
 
     # Parameters to get Average Minutes Watched and Average Percentage
     popts = Trollop::options do
-      opt :metrics, 'Report metrics', :type => String, :default => 'averageViewDuration,averageViewPercentage'
+      opt :metrics, 'Report metrics', :type => String, :default => 'views,averageViewDuration,averageViewPercentage'
       opt :filters, 'Report filters', :type => String, :default => 'video==l9LYuIbMdcY'
       opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2011-01-01'
       opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
       opt 'start-index', 'Start index', :type => :int, :default => 1
-      opt 'max-results', 'Max results', :type => :int, :default => 10
+      opt 'max-results', 'Max results', :type => :int, :default => 5
     end
 
     # Initialize the client, Youtube, and Youtube Analytics
@@ -93,8 +79,8 @@ class SessionsController < ApplicationController
       'https://www.googleapis.com/auth/yt-analytics.readonly' # may not be necessary
 
       client.authorization.update_token!(
-        access_token: session[:access_token],
-        refresh_token: session[:refresh_token] # may not be necessary
+        access_token: current_user[:access_token],
+        refresh_token: current_user[:refresh_token] # may not be necessary
         )
 
 ###############################################################################
@@ -155,12 +141,16 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
     @averageViewDuration = []
     @averageViewPercentage =[]
     @totalViews=[]
+    @total=[]
+    @test =[]
+    @viewCount_aveViewDuration_viewPercentage=[]
 
     i=0
     unless i == @dataIDs.count do     
     channels_response.data.items.each do |channel|
       opts[:ids] = "channel==#{channel.id}"
       opts[:filters]= "video=="+@dataIDs[i]+";insightTrafficSourceType==EXT_URL"
+      @channelID= channel.id
 
       analytics_response = client.execute!(
         :api_method => youtube_analytics.reports.query,
@@ -189,17 +179,7 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
         :api_method => youtube_analytics.reports.query,
         :parameters => popts
       )
-      @averageViewDuration_and_averageViewPercentage = analytics_response.data.rows
-      @averageViewDuration << @averageViewDuration_and_averageViewPercentage.flatten
-      @averageViewPercentage << @averageViewDuration_and_averageViewPercentage.flatten
-
-      vopts[:ids] = opts[:ids]
-      analytics_response = client.execute!(
-        :api_method => youtube_analytics.reports.query,
-        :parameters => vopts
-      )
-      analytics_response=analytics_response.data.rows
-      @totalViews<<analytics_response[i][1]
+      @viewCount_aveViewDuration_viewPercentage << analytics_response.data.rows.flatten
      end  
      i+=1
   end
@@ -208,9 +188,9 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
   facebook = {}
   twitter = {}
   while i < @youtubeDataAPI.count do
-    @youtubeDataAPI[i]["averageViewDuration"]= @averageViewDuration[i][0]
-    @youtubeDataAPI[i]["totalViews"]=@totalViews[i]
-    @youtubeDataAPI[i]["averageViewPercentage"]= @averageViewPercentage[i][1]
+    @youtubeDataAPI[i]["averageViewDuration"]= @viewCount_aveViewDuration_viewPercentage[i][1]
+    @youtubeDataAPI[i]["totalViews"]=@viewCount_aveViewDuration_viewPercentage[i][0]
+    @youtubeDataAPI[i]["averageViewPercentage"]= @viewCount_aveViewDuration_viewPercentage[i][2]
     @youtubeDataAPI[i]["facebookViews"]=@facebook[i]
     @youtubeDataAPI[i]["twitterViews"]=@twitter[i]
     i+=1

@@ -109,6 +109,34 @@ img{
 	width:100%;
 }
 
+.email {
+  display:block;
+  width:24rem;
+  border:0;
+  font-size:1.2rem;
+  padding:.75rem;
+  border-radius:3px;
+  box-shadow:0 1px 2px #aaa;
+  margin-top: .5rem;
+  margin-left: -.3rem;
+}
+
+.emailBody{
+  height: 20rem;
+}
+
+button{
+  display:block;
+  width:100%;
+  border:0;
+  font-size:1.2rem;
+  padding:.75rem;
+  border-radius:3px;
+  box-shadow:0 1px 2px #aaa;
+  background-color: #d2f59a;
+  margin-top: 1rem;
+}
+
 </style>
 <main>
 
@@ -135,8 +163,9 @@ img{
 
 <script>
 $(".card").swipe({
-  swipeRight:function(event, direction, distance, duration, fingerCount) {
-    $(this).text("klasdflg" );
+  swipeLeft:function() {
+    $(this).html('<input type="text" class="email" value="" placeholder="To:"><input type="text" class="email" value="" placeholder="Subject:"><textarea name="comment" class="email emailBody">Just wanted to update you on <%= i["title"] %>. \n\nPlease see below for the most current stats:\n\nTotal Views: <%= i["totalViews"] %>\nAverage View Duration: <%= i["averageViewDuration"] %>\nAverage View Percentage: <%= i["averageViewPercentage"] %>\nTraffic from Facebook: <%= i["facebookViews"] %>\nTraffic from Twitter: <%= i["twitterViews"] %></textarea><button id="Send">Send</button>');
+    $(this).css("background-color", "#B5F7E7");
   }
 });
 </script>
