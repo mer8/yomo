@@ -31,24 +31,28 @@
 	<%end%>
 
 <script>
-
-$(function(){})
+// Jquery begins
+$(function(){
+  // Jquery to swipe left and show the email form
   $(".card").swipe({
     swipeLeft:function() {
       $(this).css("display", "none");
       $('#eml' + $(this).attr("id").substring(3,999)).css("display", "block");
     }
   });
+  // Jquery to swipe right and get back to the card with analytics data
   $(".swiperight").swipe({
     swipeRight:function() {
       $(this).css("display", "none");
       $('#vid' + $(this).attr("id").substring(3,999)).css("display", "block"); 
     }
   });
+  // Jquery that flips the card back to analytics data on send of email
   $(".send_button").on('click', function(){
     $('#vid' + $(this).attr("id").substring(4,999)).css("display", "block");
     $('#eml' + $(this).attr("id").substring(4,999)).css("display", "none")
-  })
+  });
+});
 
 </script>
 	
