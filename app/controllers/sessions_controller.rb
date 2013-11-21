@@ -40,7 +40,6 @@ class SessionsController < ApplicationController
     now = Time.new.to_i
 
     opts = Trollop::options do
-      opt :port, "Specify alternate port", :default => 4333
       opt :metrics, 'Report metrics', :type => String, :default => 'views'
       opt :dimensions, 'Report dimensions', :type => String, :default => 'insightTrafficSourceDetail'
       opt :filters, 'Report filters', :type => String, :default => 'video==ueItDRlbwQg;insightTrafficSourceType==EXT_URL'
@@ -54,7 +53,6 @@ class SessionsController < ApplicationController
 
     # Parameters to get Average Minutes Watched and Average Percentage
     popts = Trollop::options do
-      opt :port, "Specify alternate port", :default => 4333
       opt :metrics, 'Report metrics', :type => String, :default => 'views,averageViewDuration,averageViewPercentage'
       opt :filters, 'Report filters', :type => String, :default => 'video==l9LYuIbMdcY'
       opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2011-01-01'
