@@ -58,7 +58,7 @@ input:focus + header {
   opacity:0;
 }
 
-.card {
+.card{
   padding:1.5rem;
   box-shadow:0 1px 2px #aaa;
   background:white;
@@ -110,8 +110,19 @@ img{
 	width:100%;
 }
 
+.swiperight{
+  padding:1.5rem;
+  box-shadow:0 1px 2px #aaa;
+  background-color: #B5F7E7;
+  margin:0 1rem 1rem;
+  border-radius:3px;
+  user-select:none;
+  animation:fly-in-from-left .5s 1s ease both;
+  transform-origin:top left;
+  display:none;
+}
+
 .email {
-  display:block;
   width:24rem;
   border:0;
   font-size:1.2rem;
@@ -134,13 +145,8 @@ button{
   padding:.75rem;
   border-radius:3px;
   box-shadow:0 1px 2px #aaa;
-  background-color: #d2f59a;
+  background-color: #ff6666;
   margin-top: 1rem;
-}
-
-.swiperight{
-  display:none;
-  background-color: #B5F7E7
 }
 
 </style>
@@ -167,8 +173,30 @@ button{
 	</section>
 
   <div class="swiperight" id="<%= "eml" +  i['id']%>">
-  <input type="text" class="email" value="" placeholder="To:"><input type="text" class="email" value="" placeholder="Subject:"><textarea name="comment" class="email emailBody">Just wanted to update you on <%= i["title"] %>. \n\nPlease see below for the most current stats:\n\nTotal Views: <%= i["totalViews"] %>\nAverage View Duration: <%= i["averageViewDuration"] %>\nAverage View Percentage: <%= i["averageViewPercentage"] %>\nTraffic from Facebook: <%= i["facebookViews"] %>\nTraffic from Twitter: <%= i["twitterViews"] %></textarea><button id="Send">Send</button>
+    <input type="text" class="email" value="" placeholder="To:">
+    <input type="text" class="email" value="" placeholder="Subject:">
+    <textarea name="comment" class="email emailBody">Just wanted to update you on <%= i["title"] %>. <br><br>Please see below for the most current stats: <br><br> Total Views: <%= i["totalViews"] %>\nAverage View Duration: <%= i["averageViewDuration"] %><br>Average View Percentage: <%= i["averageViewPercentage"] %><br>Traffic from Facebook: <%= i["facebookViews"] %>\nTraffic from Twitter: <%= i["twitterViews"] %></textarea>
+    <button class="Send">SEND</button>
   </div>
+    <%= form_for @message, :url => contact_path do |form| %>
+    <fieldset class="email">
+      
+      <div class="email">
+        <%= form.text_field :email %>
+      </div>
+      <div class="email">
+        <%= form.text_field :subject %>
+      </div>
+      
+      <div class="email emailBody">
+        <%= form.text_area :body %>
+      </div>
+    </fieldset>
+    
+    <fieldset class="Send">
+      <%= form.submit "Send" %>
+    </fieldset>
+    <% end %>
 
 	<%end%>
 
