@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
   end
 
   def index
-    @message = Message.new(:body => "test")
+    # Which APIs and API versions to use
     @YOUTUBE_SCOPES = ['https://www.googleapis.com/auth/youtube.readonly',
       'https://www.googleapis.com/auth/yt-analytics.readonly']
     @YOUTUBE_API_SERVICE_NAME = 'youtube'
@@ -39,6 +39,7 @@ class SessionsController < ApplicationController
     @YOUTUBE_ANALYTICS_API_VERSION = 'v1'
     now = Time.new.to_i
 
+    # Paramters to get traffic source information from Analytics API
     opts={:metrics=>"views", 
       :dimensions=>"insightTrafficSourceDetail", 
       :filters=>"video==ypGN6H3EKOA;insightTrafficSourceType==EXT_URL", 
@@ -49,7 +50,6 @@ class SessionsController < ApplicationController
     @opts = opts
 
     # Parameters to get Average Minutes Watched and Average Percentage
-
     popts={:metrics=>"views,averageViewDuration,averageViewPercentage", 
       :filters=>"video==ypGN6H3EKOA", 
       "start-date"=>"2011-01-01", 
@@ -59,7 +59,6 @@ class SessionsController < ApplicationController
       :help=>false, :ids=>"channel==UCHjzmXcM52GFvKQxsSEuZ-g"}
 
     # Initialize the client, Youtube, and Youtube Analytics
-
     client = Google::APIClient.new
     youtube = client.discovered_api(@YOUTUBE_API_SERVICE_NAME, @YOUTUBE_API_VERSION)
     youtube_analytics = client.discovered_api(@YOUTUBE_ANALYTICS_API_SERVICE_NAME,
