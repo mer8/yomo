@@ -60,9 +60,11 @@ class SessionsController < ApplicationController
 
     # Initialize the client, Youtube, and Youtube Analytics
     client = Google::APIClient.new
-    youtube = client.discovered_api(@YOUTUBE_API_SERVICE_NAME, @YOUTUBE_API_VERSION)
-    youtube_analytics = client.discovered_api(@YOUTUBE_ANALYTICS_API_SERVICE_NAME,
-      @YOUTUBE_ANALYTICS_API_VERSION)
+    youtube = client.discovered_api('youtube', 'v3')
+    youtube_analytics = client.discovered_api('youtubeAnalytics', 'v1')   
+    # youtube = client.discovered_api(@YOUTUBE_API_SERVICE_NAME, @YOUTUBE_API_VERSION)
+    # youtube_analytics = client.discovered_api(@YOUTUBE_ANALYTICS_API_SERVICE_NAME,
+    #   @YOUTUBE_ANALYTICS_API_VERSION)
 
     require 'google/api_client/client_secrets'
     client.authorization = Google::APIClient::ClientSecrets.load('app/controllers/client_secrets.json').to_authorization
