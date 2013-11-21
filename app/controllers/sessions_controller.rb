@@ -39,27 +39,42 @@ class SessionsController < ApplicationController
     @YOUTUBE_ANALYTICS_API_VERSION = 'v1'
     now = Time.new.to_i
 
-    opts = Trollop::options do
-      opt :metrics, 'Report metrics', :type => String, :default => 'views'
-      opt :dimensions, 'Report dimensions', :type => String, :default => 'insightTrafficSourceDetail'
-      opt :filters, 'Report filters', :type => String, :default => 'video==ueItDRlbwQg;insightTrafficSourceType==EXT_URL'
-      opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2011-01-01'
-      opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
-      opt 'start-index', 'Start index', :type => :int, :default => 1
-      opt 'max-results', 'Max results', :type => :int, :default => 5
-      opt :sort, 'Sort order', :type => String, :default => '-views'
-    end
+    # opts = Trollop::options do
+    #   opt :metrics, 'Report metrics', :type => String, :default => 'views'
+    #   opt :dimensions, 'Report dimensions', :type => String, :default => 'insightTrafficSourceDetail'
+    #   opt :filters, 'Report filters', :type => String, :default => 'video==ueItDRlbwQg;insightTrafficSourceType==EXT_URL'
+    #   opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2011-01-01'
+    #   opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
+    #   opt 'start-index', 'Start index', :type => :int, :default => 1
+    #   opt 'max-results', 'Max results', :type => :int, :default => 5
+    #   opt :sort, 'Sort order', :type => String, :default => '-views'
+    # end
+    opts={:metrics=>"views", 
+      :dimensions=>"insightTrafficSourceDetail", 
+      :filters=>"video==ypGN6H3EKOA;insightTrafficSourceType==EXT_URL", 
+      "start-date"=>"2011-01-01", "end-date"=>"2013-11-11", "start-index"=>1, 
+      "max-results"=>5, :sort=>"-views", 
+      :help=>false, 
+      :ids=>"channel==UCHjzmXcM52GFvKQxsSEuZ-g"}
     @opts = opts
 
     # Parameters to get Average Minutes Watched and Average Percentage
-    popts = Trollop::options do
-      opt :metrics, 'Report metrics', :type => String, :default => 'views,averageViewDuration,averageViewPercentage'
-      opt :filters, 'Report filters', :type => String, :default => 'video==l9LYuIbMdcY'
-      opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2011-01-01'
-      opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
-      opt 'start-index', 'Start index', :type => :int, :default => 1
-      opt 'max-results', 'Max results', :type => :int, :default => 5
-    end
+    # popts = Trollop::options do
+    #   opt :metrics, 'Report metrics', :type => String, :default => 'views,averageViewDuration,averageViewPercentage'
+    #   opt :filters, 'Report filters', :type => String, :default => 'video==l9LYuIbMdcY'
+    #   opt 'start-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2011-01-01'
+    #   opt 'end-date', 'Start date, in YYYY-MM-DD format', :type => String, :default => '2013-11-11'
+    #   opt 'start-index', 'Start index', :type => :int, :default => 1
+    #   opt 'max-results', 'Max results', :type => :int, :default => 5
+    # end
+
+    popts={:metrics=>"views,averageViewDuration,averageViewPercentage", 
+      :filters=>"video==ypGN6H3EKOA", 
+      "start-date"=>"2011-01-01", 
+      "end-date"=>"2013-11-11", 
+      "start-index"=>1, 
+      "max-results"=>5, 
+      :help=>false, :ids=>"channel==UCHjzmXcM52GFvKQxsSEuZ-g"}
 
     # Initialize the client, Youtube, and Youtube Analytics
 
@@ -134,7 +149,7 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
       }
     )
 
-    @opts = channels_response.data
+    # @opts = channels_response.data
     @facebook = []
     @facebookHash={}
     @twitter = []
