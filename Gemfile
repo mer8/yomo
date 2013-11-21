@@ -1,4 +1,9 @@
 source 'https://rubygems.org'
+
+group :production do
+	gem 'rails_12factor'
+end
+
 gem 'pry-debugger'
 # Gems to authorize users using Omniauth 2
 gem "omniauth-google-oauth2"
