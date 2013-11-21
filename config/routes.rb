@@ -6,6 +6,6 @@ Yomo::Application.routes.draw do
   get "sessions" => 'sessions#index'
   resources :videos, only: [:index, :new, :show, :create]
   get 'contact/new' => 'contact#new'
-  post 'contact' => 'contact#create'
+  post 'contact' => 'contact#create', :as => 'contact'
   
 end

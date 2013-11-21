@@ -30,6 +30,7 @@ class SessionsController < ApplicationController
   end
 
   def index
+    @message = Message.new(:body => "test")
     @YOUTUBE_SCOPES = ['https://www.googleapis.com/auth/youtube.readonly',
       'https://www.googleapis.com/auth/yt-analytics.readonly']
     @YOUTUBE_API_SERVICE_NAME = 'youtube'
@@ -190,7 +191,7 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
   while i < @youtubeDataAPI.count do
     @youtubeDataAPI[i]["averageViewDuration"]= @viewCount_aveViewDuration_viewPercentage[i][1]
     @youtubeDataAPI[i]["totalViews"]=@viewCount_aveViewDuration_viewPercentage[i][0]
-    @youtubeDataAPI[i]["averageViewPercentage"]= @viewCount_aveViewDuration_viewPercentage[i][2]
+    @youtubeDataAPI[i]["averageViewPercentage"]= @viewCount_aveViewDuration_viewPercentage[i][2].to_f.round(2)
     @youtubeDataAPI[i]["facebookViews"]=@facebook[i]
     @youtubeDataAPI[i]["twitterViews"]=@twitter[i]
     i+=1

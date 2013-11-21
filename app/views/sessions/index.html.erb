@@ -122,7 +122,7 @@ img{
   display:none;
 }
 
-.email {
+.swiperight input {
   width:24rem;
   border:0;
   font-size:1.2rem;
@@ -133,13 +133,21 @@ img{
   margin-left: -.3rem;
 }
 
-.emailBody{
+.swiperight textarea {
   height: 20rem;
+  width:24rem;
+  border:0;
+  font-size:1.2rem;
+  padding:.75rem;
+  border-radius:3px;
+  box-shadow:0 1px 2px #aaa;
+  margin-top: .5rem;
+  margin-left: -.3rem;
 }
 
-button{
+.swiperight input[type="submit"] {
   display:block;
-  width:100%;
+  width:25.5rem;
   border:0;
   font-size:1.2rem;
   padding:.75rem;
@@ -167,40 +175,20 @@ button{
 		<h2><a href = "<%= i["url"] %>"><%= i["url"] %></a></h2>
 		<h2>Total Views: <%= i["totalViews"] %></h2>
 		<h2>Average View Duration: <%= i["averageViewDuration"] %></h2>
-		<h2>Average View Percentage: <%= i["averageViewPercentage"] %></h2>
+		<h2>Average View Percentage: <%= i["averageViewPercentage"] %>%</h2>
 		<h2>Traffic from Facebook: <%= i["facebookViews"] %></h2>
 		<h2>Traffic from Twitter: <%= i["twitterViews"] %></h2>
 	</section>
 
   <div class="swiperight" id="<%= "eml" +  i['id']%>">
-    <input type="text" class="email" value="" placeholder="To:">
-    <input type="text" class="email" value="" placeholder="Subject:">
-    <textarea name="comment" class="email emailBody">Just wanted to update you on <%= i["title"] %>. <br><br>Please see below for the most current stats: <br><br> Total Views: <%= i["totalViews"] %>\nAverage View Duration: <%= i["averageViewDuration"] %><br>Average View Percentage: <%= i["averageViewPercentage"] %><br>Traffic from Facebook: <%= i["facebookViews"] %>\nTraffic from Twitter: <%= i["twitterViews"] %></textarea>
-    <button class="Send">SEND</button>
-  </div>
-    <%= form_for @message, :url => contact_path do |form| %>
-    <fieldset class="email">
-      
-      <div class="email">
-        <%= form.text_field :email %>
-      </div>
-      <div class="email">
-        <%= form.text_field :subject %>
-      </div>
-      
-      <div class="email emailBody">
-        <%= form.text_area :body %>
-      </div>
-    </fieldset>
-    
-    <fieldset class="Send">
-      <%= form.submit "Send" %>
-    </fieldset>
+    <%= form_for @message, :remote=>true, :url => contact_path do |form| %>
+      <%= form.text_field :email, placeholder: "To:" %>
+      <%= form.text_field :subject, placeholder: "Subject:" %>
+      <%= form.text_area :body, :value => "Just wanted to update you on the #{i['title']} video.\n\nPlease see below for the most current stats on the video:\n\nTotal Views: #{i['totalViews']}\nAverage View Duration: #{i['averageViewDuration']}\nAverage View Percentage: #{i['averageViewPercentage']}%\nTraffic from Facebook: #{i['facebookViews']}\nTraffic from Twitter: #{i['twitterViews']}" %>
+      <%= form.submit "Send", id:"send#{i['id']}", class:"send_button" %>
     <% end %>
-
+  </div>
 	<%end%>
-
-
 
 <script>
 
@@ -217,6 +205,10 @@ $(function(){})
       $('#vid' + $(this).attr("id").substring(3,999)).css("display", "block"); 
     }
   });
+  $(".send_button").on('click', function(){
+    $('#vid' + $(this).attr("id").substring(4,999)).css("display", "block");
+    $('#eml' + $(this).attr("id").substring(4,999)).css("display", "none")
+  })
 
 </script>
 	
