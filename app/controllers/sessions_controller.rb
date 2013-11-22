@@ -30,6 +30,7 @@ class SessionsController < ApplicationController
   end
 
   def index
+    # Instance variable linking the Action Mailer
     @message = Message.new(:body => "test")
     # Which APIs and API versions to use
     @YOUTUBE_SCOPES = ['https://www.googleapis.com/auth/youtube.readonly',
