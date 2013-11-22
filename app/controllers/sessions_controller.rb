@@ -59,7 +59,7 @@ class SessionsController < ApplicationController
       :help=>false, :ids=>"channel==UCHjzmXcM52GFvKQxsSEuZ-g"}
 
     # Initialize the client, Youtube, and Youtube Analytics
-    client = Google::APIClient.new(:application_name => "testdevelop",:application_version => "1.0")
+    client = Google::APIClient.new
     youtube = client.discovered_api('youtube','v3')
     youtube_analytics = client.discovered_api('youtubeAnalytics', 'v1')   
     # youtube = client.discovered_api(@YOUTUBE_API_SERVICE_NAME, @YOUTUBE_API_VERSION)
