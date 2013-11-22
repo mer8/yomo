@@ -160,10 +160,12 @@ img{
   margin-top: 1rem;
 }
 
-@media (max-width: 600px) {
-  main {
+@media (max-width: 480px) {
+  main{
     width: 100%;
-    background-color: lime;
+  }
+  header{
+    width: 100%;
   }
 }
 
