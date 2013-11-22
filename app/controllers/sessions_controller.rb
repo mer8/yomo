@@ -200,11 +200,6 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
    
 end
 end
-
-def mailer
-  @message=User.all
-end
-
 end
 
 #Please show up on Github
