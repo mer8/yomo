@@ -67,7 +67,7 @@ class SessionsController < ApplicationController
     #   @YOUTUBE_ANALYTICS_API_VERSION)
 
     require 'google/api_client/client_secrets'
-    client.authorization = Google::APIClient::ClientSecrets.load('app/controllers/client_secrets.json').to_authorization
+    client.authorization = Google::APIClient::ClientSecrets.load("app/controllers/client_secrets.json").to_authorization
 
     # Initialize OAuth 2.0 client    
       client.authorization.client_id = '434092699375.apps.googleusercontent.com'
