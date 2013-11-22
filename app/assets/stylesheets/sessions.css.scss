@@ -125,15 +125,16 @@ img{
   display:none;
 }
 
-.swiperight input {
+.swiperight input{
   width:24rem;
   border:0;
   font-size:1.2rem;
   padding:.75rem;
   border-radius:3px;
   box-shadow:0 1px 2px #aaa;
-  margin-top: .5rem;
-  margin-left: -.3rem;
+  // margin-top: .5rem;
+  margin: .5rem auto;
+  // margin-left: -.3rem;
 }
 
 .swiperight textarea {
@@ -144,8 +145,9 @@ img{
   padding:.75rem;
   border-radius:3px;
   box-shadow:0 1px 2px #aaa;
-  margin-top: .5rem;
-  margin-left: -.3rem;
+  margin: .5rem auto;
+  // margin-top: .5rem;
+  // margin-left: -.3rem;
 }
 
 .swiperight input[type="submit"] {
@@ -160,9 +162,32 @@ img{
   margin-top: 1rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   main {
     width: 100%;
   }
+  .card {
+    margin:0 .5rem 1rem .5rem;
+  }
+  input{
+    margin:4.5rem auto;
+  }
+  input:focus {
+  margin:0 auto 1rem;
+  outline:0;
+  }
+  .swiperight{
+    margin:1rem auto;
+  }
+
+  .swiperight textarea{
+    margin: .5rem .2rem;
+  }
+
 }
+// @media (max-width: 600px) {
+//   main {
+//     width: 100%;
+//   }
+// }
 
