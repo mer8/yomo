@@ -159,3 +159,11 @@ img{
   background-color: #ff6666;
   margin-top: 1rem;
 }
+
+@media (max-width: 600px) {
+  main {
+    width: 100%;
+    background-color: lime;
+  }
+}
+
