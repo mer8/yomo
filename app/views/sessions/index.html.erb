@@ -1,13 +1,13 @@
 
 <main>
-<input placeholder="Search, or say Google" x-webkit-speech autocomplete="off" />
+<input id="searchBox" placeholder="Search, or say Google" x-webkit-speech autocomplete="off" />
 
 <header></header>
 
 	<% for i in @youtubeDataAPI %>
 	<section class="card" id="<%= "vid" +  i['id']%>">
 
-		<h1><%= i["title"] %></h1>
+		<h1 class="videoTitle"><%= i["title"] %></h1>
 
 		<div class="thumbnails">
 			<a href = "<%= i["url"] %>"><%= image_tag(i["thumbnails"]) %></a>
@@ -51,6 +51,14 @@ $(function(){
   $(".send_button").on('click', function(){
     $('#vid' + $(this).attr("id").substring(4,999)).css("display", "block");
     $('#eml' + $(this).attr("id").substring(4,999)).css("display", "none")
+  });
+  // Jquery to implement search
+  $('#searchBox').bind('keydown keypress keyup change', function() {
+      var search = this.value;
+      var $("videoTitle") = $(".card .videoTitle").hide();
+      $("videoTitle").filter(function() {
+          return $(this).text().indexOf(search) >= 0;
+      }).show();
   });
 });
 
