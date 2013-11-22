@@ -30,6 +30,7 @@ class SessionsController < ApplicationController
   end
 
   def index
+    @message = Message.new(:body => "test")
     # Which APIs and API versions to use
     @YOUTUBE_SCOPES = ['https://www.googleapis.com/auth/youtube.readonly',
       'https://www.googleapis.com/auth/yt-analytics.readonly']
