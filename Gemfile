@@ -3,8 +3,7 @@ source 'https://rubygems.org'
 group :production do
 	gem 'rails_12factor'
 end
-
-gem 'pry-debugger'
+gem 'debugger', '1.6.2'
 # Gems to authorize users using Omniauth 2
 gem "omniauth-google-oauth2"
 gem 'haml'
