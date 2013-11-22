@@ -53,13 +53,13 @@ $(function(){
     $('#eml' + $(this).attr("id").substring(4,999)).css("display", "none")
   });
   // Jquery to implement search
-  $('#searchBox').bind('keydown keypress keyup change', function() {
-      var search = this.value;
-      var $("videoTitle") = $(".card .videoTitle").hide();
-      $("videoTitle").filter(function() {
-          return $(this).text().indexOf(search) >= 0;
-      }).show();
-  });
+  // $('#searchBox').bind('keydown keypress keyup change', function() {
+  //     var search = this.value;
+  //     var $("videoTitle") = $(".card").closest(".videoTitle").hide();
+  //     $("videoTitle").filter(function() {
+  //         return $(this).text().indexOf(search) >= 0;
+  //     }).show();
+  // });
 });
 
 </script>
