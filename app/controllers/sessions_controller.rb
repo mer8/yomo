@@ -72,15 +72,18 @@ class SessionsController < ApplicationController
     # Initialize OAuth 2.0 client    
       client.authorization.client_id = '434092699375.apps.googleusercontent.com'
       client.authorization.client_secret = 'or1NmEWn2QOmObdok9No6jcV'
-      client.authorization.redirect_uri = 'http://serene-shore-5045.herokuapp.com/auth/google_login/callback'
+      
+      # client.authorization.redirect_uri = 'http://serene-shore-5045.herokuapp.com/auth/google_login/callback'
 
       client.authorization.scope = 'https://www.googleapis.com/auth/youtube.readonly', # may not be necessary
       'https://www.googleapis.com/auth/yt-analytics.readonly' # may not be necessary
+      client.authorization.access_token = session[:access_token]
+      client.authorization.refresh_token = session[:refresh_token]
 
-      client.authorization.update_token!(
-        access_token: current_user[:access_token],
-        refresh_token: current_user[:refresh_token] # may not be necessary
-        )
+      # client.authorization.update_token!(
+      #   access_token: current_user[:access_token],
+      #   refresh_token: current_user[:refresh_token] # may not be necessary
+      #   )
 
 ###############################################################################
 channels_response = client.execute!(
