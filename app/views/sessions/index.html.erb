@@ -21,7 +21,7 @@
 	</section>
 
   <div class="swiperight" id="<%= "eml" +  i['id']%>">
-    <%= form_for @message, :remote=>true, :url => contact_path do |form| %>
+    <%= form_for @message, :remote=>true, url:contact_path do |form| %>
       <%= form.text_field :email, placeholder: "To:" %>
       <%= form.text_field :subject, placeholder: "Subject:" %>
       <%= form.text_area :body, :value => "Just wanted to update you on the #{i['title']} video.\n\nPlease see below for the most current stats on the video:\n\nTotal Views: #{i['totalViews']}\nAverage View Duration: #{i['averageViewDuration']}\nAverage View Percentage: #{i['averageViewPercentage']}%\nTraffic from Facebook: #{i['facebookViews']}\nTraffic from Twitter: #{i['twitterViews']}" %>
