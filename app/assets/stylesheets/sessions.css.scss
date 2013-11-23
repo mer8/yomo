@@ -8,6 +8,7 @@
 
 body { 
   background:#222;  
+  margin: 0 auto;
 }
 
 
@@ -15,7 +16,7 @@ main {
   display:block;
   position:relative;
   width:30rem;
-  margin:0 auto;
+  margin:3vh auto;
   padding:1.5rem 0 0;
   background:#d5d5d5;
   /*outline*/
@@ -188,6 +189,10 @@ img{
 
   .send_button{
     -webkit-appearance: none;
+  }
+
+  main{
+    margin: 0 auto;
   }
 
 }
