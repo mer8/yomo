@@ -7,9 +7,9 @@ class SessionsController < ApplicationController
       :expires => auth["credentials"]["expires_at"],
       :name => auth["info"]["name"],
     )
-    url = session[:return_to] || root_path
+    url = session[:return_to] || sessions_url
     session[:return_to] = nil
-    url = root_path if url.eql?('/logout')
+    url = sessions_url if url.eql?('/logout')
 
     if user.save
       session[:user_id] = user.id
