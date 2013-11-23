@@ -165,7 +165,7 @@ img{
   margin-top: 1rem;
 }
 
-@media (max-width: 480px) {
+@media screen and (device-aspect-ratio: 40/71){
   main {
     width: 100%;
   }
