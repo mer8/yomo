@@ -88,120 +88,116 @@ class SessionsController < ApplicationController
       #   )
 
 ###############################################################################
-channels_response = client.execute!(
-  :api_method => youtube.channels.list,
-  :parameters => {
-    :mine => true,
-    :part => 'contentDetails',
-    # :fields => 'snippet(title)'
-  }
-)
-dataAPIparsed = channels_response.data.items.to_json
-dataAPIparsed = JSON.parse(dataAPIparsed)
-  # dataAPIparsed.each do |channel|
-
-uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
-
-  playlistitems_response = client.execute!(
-    :api_method => youtube.playlist_items.list,
-    :parameters => {
-      :playlistId => dataAPIparsed[0]['contentDetails']['relatedPlaylists']['uploads'],
-      :part => 'snippet',
-      :maxResults => 10
-    }
-  )
-
-#   pts "Videos in list #{uploads_list_id}"
-  @youtubeDataAPI =[]
-  @dataIDs = []
-  playlistitems_response.data.items.each do |playlist_item|
-    @hash = Hash["title" => "",
-              "id" => "",
-              "url" => "",
-              "thumbnails" => "" ]
-
-    @hash['title'] = playlist_item['snippet']['title']
-    @hash['id'] = playlist_item['snippet']['resourceId']['videoId']
-    @dataIDs << playlist_item['snippet']['resourceId']['videoId']
-    @hash['url'] = 'http://www.youtube.com/watch?v='+playlist_item['snippet']['resourceId']['videoId'].to_s
-    @hash['thumbnails'] = JSON.parse(playlist_item.to_json)['snippet']['thumbnails']['medium']['url']
-    @youtubeDataAPI << @hash
-  end
-    
-    # Traffic from Facebook
     channels_response = client.execute!(
       :api_method => youtube.channels.list,
       :parameters => {
         :mine => true,
-        :part => 'id'
+        :part => 'contentDetails',
+        # :fields => 'snippet(title)'
+      }
+    )
+    dataAPIparsed = channels_response.data.items.to_json
+    dataAPIparsed = JSON.parse(dataAPIparsed)
+  # dataAPIparsed.each do |channel|
+
+    uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
+
+    playlistitems_response = client.execute!(
+      :api_method => youtube.playlist_items.list,
+      :parameters => {
+        :playlistId => dataAPIparsed[0]['contentDetails']['relatedPlaylists']['uploads'],
+        :part => 'snippet',
+        :maxResults => 10
       }
     )
 
-    # @opts = channels_response.data
-    @facebook = []
-    @facebookHash={}
-    @twitter = []
-    @twitterHash ={}
-    @averageViewDuration = []
-    @averageViewPercentage =[]
-    @totalViews=[]
-    @total=[]
-    @test =[]
-    @viewCount_aveViewDuration_viewPercentage=[]
+#   pts "Videos in list #{uploads_list_id}"
+      @youtubeDataAPI =[]
+      @dataIDs = []
+      playlistitems_response.data.items.each do |playlist_item|
+        @hash = Hash["title" => "",
+                  "id" => "",
+                  "url" => "",
+                  "thumbnails" => "" ]
 
+        @hash['title'] = playlist_item['snippet']['title']
+        @hash['id'] = playlist_item['snippet']['resourceId']['videoId']
+        @dataIDs << playlist_item['snippet']['resourceId']['videoId']
+        @hash['url'] = 'http://www.youtube.com/watch?v='+playlist_item['snippet']['resourceId']['videoId'].to_s
+        @hash['thumbnails'] = JSON.parse(playlist_item.to_json)['snippet']['thumbnails']['medium']['url']
+        @youtubeDataAPI << @hash
+      end
+    
+    # Traffic from Facebook
+      channels_response = client.execute!(
+        :api_method => youtube.channels.list,
+        :parameters => {
+          :mine => true,
+          :part => 'id'
+        }
+      )
+
+      @facebook = []
+      @facebookHash={}
+      @twitter = []
+      @twitterHash ={}
+      @averageViewDuration = []
+      @averageViewPercentage =[]
+      @totalViews=[]
+      @total=[]
+      @test =[]
+      @viewCount_aveViewDuration_viewPercentage=[]
+
+      i=0
+      unless i == @dataIDs.count do     
+        channels_response.data.items.each do |channel|
+          opts[:ids] = "channel==#{channel.id}"
+          opts[:filters]= "video=="+@dataIDs[i]+";insightTrafficSourceType==EXT_URL"
+          @channelID= channel.id
+
+          analytics_response = client.execute!(
+            :api_method => youtube_analytics.reports.query,
+            :parameters => opts
+          )
+
+          data = analytics_response.data.rows.select do |e| 
+            e[0]=~/^(https?:\/\/)?(?:www\.)?(?:facebook)?(?:\.com)?$/
+          end
+
+          result= data.flatten
+          @facebook << result.map {|x| Integer(x) rescue nil }.compact.sum
+
+        # Traffic from Twitter
+          data = analytics_response.data.rows.select do |e| 
+            e[0]=~/^(https?:\/\/)?(?:www\.)?(?:youtu.be)?(?:\.com)?$/
+          end
+          result= data.flatten
+          
+
+          @twitter << result.map {|x| Integer(x) rescue nil }.compact.sum
+
+          popts[:ids] = opts[:ids]
+          popts[:filters]= "video=="+@dataIDs[i]
+
+          analytics_response = client.execute!(
+            :api_method => youtube_analytics.reports.query,
+            :parameters => popts
+          )
+          @viewCount_aveViewDuration_viewPercentage << analytics_response.data.rows.flatten
+         end  
+         i+=1
+      end
     i=0
-    unless i == @dataIDs.count do     
-    channels_response.data.items.each do |channel|
-      opts[:ids] = "channel==#{channel.id}"
-      opts[:filters]= "video=="+@dataIDs[i]+";insightTrafficSourceType==EXT_URL"
-      @channelID= channel.id
-
-      analytics_response = client.execute!(
-        :api_method => youtube_analytics.reports.query,
-        :parameters => opts
-      )
-
-      data = analytics_response.data.rows.select do |e| 
-        e[0]=~/^(https?:\/\/)?(?:www\.)?(?:facebook)?(?:\.com)?$/
-      end
-      result= data.flatten
-      @facebook << result.map {|x| Integer(x) rescue nil }.compact.sum
-
-    # Traffic from Twitter
-      data = analytics_response.data.rows.select do |e| 
-        e[0]=~/^(https?:\/\/)?(?:www\.)?(?:youtu.be)?(?:\.com)?$/
-      end
-      result= data.flatten
-      
-
-      @twitter << result.map {|x| Integer(x) rescue nil }.compact.sum
-
-      popts[:ids] = opts[:ids]
-      popts[:filters]= "video=="+@dataIDs[i]
-
-      analytics_response = client.execute!(
-        :api_method => youtube_analytics.reports.query,
-        :parameters => popts
-      )
-      @viewCount_aveViewDuration_viewPercentage << analytics_response.data.rows.flatten
-     end  
-     i+=1
+    facebook = {}
+    twitter = {}
+    while i < @youtubeDataAPI.count do
+      @youtubeDataAPI[i]["averageViewDuration"]= @viewCount_aveViewDuration_viewPercentage[i][1]
+      @youtubeDataAPI[i]["totalViews"]=@viewCount_aveViewDuration_viewPercentage[i][0]
+      @youtubeDataAPI[i]["averageViewPercentage"]= @viewCount_aveViewDuration_viewPercentage[i][2].to_f.round(2)
+      @youtubeDataAPI[i]["facebookViews"]=@facebook[i]
+      @youtubeDataAPI[i]["twitterViews"]=@twitter[i]
+      i+=1
+    end
   end
-
-  i=0
-  facebook = {}
-  twitter = {}
-  while i < @youtubeDataAPI.count do
-    @youtubeDataAPI[i]["averageViewDuration"]= @viewCount_aveViewDuration_viewPercentage[i][1]
-    @youtubeDataAPI[i]["totalViews"]=@viewCount_aveViewDuration_viewPercentage[i][0]
-    @youtubeDataAPI[i]["averageViewPercentage"]= @viewCount_aveViewDuration_viewPercentage[i][2].to_f.round(2)
-    @youtubeDataAPI[i]["facebookViews"]=@facebook[i]
-    @youtubeDataAPI[i]["twitterViews"]=@twitter[i]
-    i+=1
-  end
-   
 end
 end
-end
-
-#Please show up on Github
