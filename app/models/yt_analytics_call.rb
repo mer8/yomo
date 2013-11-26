@@ -43,6 +43,7 @@ class YtAnalyticsCall
 		yt_stuff[:popts][:ids] = yt_stuff[:opts][:ids]
 		yt_stuff[:popts][:filters]= @video
 
+		logger.debug youtube_analytics.reports.query
 		analytics_response = client.execute!(
 			:api_method => youtube_analytics.reports.query,
 			:parameters => yt_stuff[:popts]
