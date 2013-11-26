@@ -1,11 +1,11 @@
-
+<button id="test" data-channel="">fadsfds</button>
 <main>
 <input id="searchBox" placeholder="Search, or say Google" x-webkit-speech autocomplete="off" />
 
 <header></header>
 
 	<% for i in @youtubeDataAPI %>
-	<section class="card" id="<%= "vid" +  i['id']%>">
+	<section class="card" id="<%= "vid" +  i['id']%>" data-channel= "<%=i['id']%>" >
 
 		<h1 class="videoTitle"><%= i["title"] %></h1>
 
@@ -13,12 +13,16 @@
 			<a href = "<%= i["url"] %>"><%= image_tag(i["thumbnails"]) %></a>
 		</div>
 		<h2><a href = "<%= i["url"] %>"><%= i["url"] %></a></h2>
-		<h2>Total Views: <%= i["totalViews"] %></h2>
-		<h2>Average View Duration: <%= i["averageViewDuration"] %></h2>
-		<h2>Average View Percentage: <%= i["averageViewPercentage"] %>%</h2>
-		<h2>Traffic from Facebook: <%= i["facebookViews"] %></h2>
-		<h2>Traffic from Twitter: <%= i["twitterViews"] %></h2>
-	</section>
+  </section>
+
+  <div class="card">
+fasdfasdfs
+<!--       <h2>Total Views: <%#= i["totalViews"] %></h2>
+      <h2>Average View Duration: <%#= i["averageViewDuration"] %></h2>
+      <h2>Average View Percentage: <%#= i["averageViewPercentage"] %>%</h2>
+      <h2>Traffic from Facebook: <%#= i["facebookViews"] %></h2>
+      <h2>Traffic from Twitter: <%#= i["twitterViews"] %></h2>
+ -->  </div>
 
   <div class="swiperight" id="<%= "eml" +  i['id']%>">
     <%= form_for @message, :remote=>true, :url => contact_path do |form| %>
@@ -28,40 +32,10 @@
       <%= form.submit "Send", id:"send#{i['id']}", class:"send_button" %>
     <% end %>
   </div>
-	<%end%>
 
-<script>
-// Jquery begins
-$(function(){
-  // Jquery to swipe left and show the email form
-  $(".card").swipe({
-    swipeLeft:function() {
-      $(this).css("display", "none");
-      $('#eml' + $(this).attr("id").substring(3,999)).css("display", "block");
-    }
-  });
-  // Jquery to swipe right and get back to the card with analytics data
-  $(".swiperight").swipe({
-    swipeRight:function() {
-      $(this).css("display", "none");
-      $('#vid' + $(this).attr("id").substring(3,999)).css("display", "block"); 
-    }
-  });
-  // Jquery that flips the card back to analytics data on send of email
-  $(".send_button").on('click', function(){
-    $('#vid' + $(this).attr("id").substring(4,999)).css("display", "block");
-    $('#eml' + $(this).attr("id").substring(4,999)).css("display", "none")
-  });
-  // Jquery to implement search
-  $('#searchBox').bind('keydown keypress keyup change', function() {
-      var search = this.value;
-      var $li= $(".card").hide();
-      $li.filter(function() {
-          return $(this).text().indexOf(search) >= 0;
-      }).show();
-  });
-});
 
-</script>
-	
+
+
+
+	<%end%>	
 </main>
