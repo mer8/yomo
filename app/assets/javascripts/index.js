@@ -3,10 +3,12 @@ $(document).ready(function(){
   $(".card").swipe({
     swipeLeft:function() {
 	  event.preventDefault();
-      $.post('/sessions/anaInfo', {channelID:$(this).closest(".card").data("channel")}, function(){
-        $.get('/sessions/anaInfo', function(data) {
-			   console.log(data);
- 		    });
+      $.ajax('/sessions/anaInfo',{
+        type: 'POST',
+        data: {"channelID":$(this).closest(".card").data("channel")},
+        success: function(data){
+          console.log(data);
+        }
       });
   	}
   });

@@ -37,6 +37,8 @@ class SessionsController < ApplicationController
       # Drops in session and refresh token to help initialize the API client
       client.authorization.access_token = session[:access_token]
       client.authorization.refresh_token = session[:refresh_token]
+      # raise videoid.inspect
+      # videoid="F6SNbytKCvU"
       # Makes calls to the Youtube Data API to retrieve the rest of the data
       result=YtAnalyticsCall.traffic_call(client, yt_stuff, videoid)
       # raise result.inspect
