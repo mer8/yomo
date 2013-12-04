@@ -151,7 +151,4 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
   end
    
   end
-
-
-
 end
