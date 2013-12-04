@@ -6,6 +6,14 @@ end
 
 gem 'pry'
 
+# Gems to set up testing environment
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'database_cleaner'
+end
+
 # Gems to authorize users using Omniauth 2
 gem "omniauth-google-oauth2"
 gem 'haml'
