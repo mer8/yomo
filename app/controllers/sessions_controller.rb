@@ -103,5 +103,5 @@ class SessionsController < ApplicationController
       'https://www.googleapis.com/auth/yt-analytics.readonly' # may not be necessary
       client.authorization.access_token = session[:access_token]
       client.authorization.refresh_token = session[:refresh_token]
-
+    end
 end
