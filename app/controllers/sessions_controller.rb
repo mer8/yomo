@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  
+
   def create
     auth = request.env["omniauth.auth"]
     user = User.where(:provider => auth["provider"], :uid => auth["uid"]).first_or_initialize(
@@ -23,7 +25,7 @@ class SessionsController < ApplicationController
       raise "Failed to login"
     end
   end
-    def anaInfo 
+  def anaInfo 
       videoid=params[:channelID]
       # if channelID.save!
       #     render :status => :ok, :json => { status: 'SUCCESS' }
@@ -41,9 +43,8 @@ class SessionsController < ApplicationController
       # videoid="F6SNbytKCvU"
       # Makes calls to the Youtube Data API to retrieve the rest of the data
       result=YtAnalyticsCall.traffic_call(client, yt_stuff, videoid)
-      # raise result.inspect
       render :json => result
-
+     
   end
   def destroy
     session[:user_id] = nil

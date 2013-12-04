@@ -4,16 +4,6 @@ class YtAnalyticsCall
 		Rails.logger.debug "**********************************************" 
 		Rails.logger.debug videoid
 
-
-		@facebook = []
-	    @facebookHash={}
-	    @twitter = []
-	    @twitterHash ={}
-	    @averageViewDuration = []
-	    @averageViewPercentage =[]
-	    @totalViews=[]
-	    @total=[]
-	    @test =[]
 	    @anaTotal=[]
 
 		youtube_analytics = client.discovered_api('youtubeAnalytics', 'v1')   
@@ -45,6 +35,7 @@ class YtAnalyticsCall
 
 		yt_stuff[:popts][:ids] = yt_stuff[:opts][:ids]
 		yt_stuff[:popts][:filters]= "video==" + videoid.to_s
+		# views,averageViewDuration,averageViewPercentage in this order
 
 		Rails.logger.debug "**********************************************" 
 		Rails.logger.debug youtube_analytics.reports.query
