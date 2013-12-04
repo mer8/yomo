@@ -13,9 +13,6 @@ def self.initial
       client.authorization.client_secret = 'or1NmEWn2QOmObdok9No6jcV'
       client.authorization.scope = 'https://www.googleapis.com/auth/youtube.readonly', # may not be necessary
       'https://www.googleapis.com/auth/yt-analytics.readonly' # may not be necessary
-      # client.authorization.access_token = session[:access_token]
-      # client.authorization.refresh_token = session[:refresh_token]
-
       client
     end
 end

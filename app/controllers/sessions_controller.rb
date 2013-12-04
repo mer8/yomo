@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  
+
   def create
     auth = request.env["omniauth.auth"]
     user = User.where(:provider => auth["provider"], :uid => auth["uid"]).first_or_initialize(
@@ -23,7 +25,7 @@ class SessionsController < ApplicationController
       raise "Failed to login"
     end
   end
-    def anaInfo 
+  def anaInfo 
       videoid=params[:channelID]
       # if channelID.save!
       #     render :status => :ok, :json => { status: 'SUCCESS' }
@@ -37,11 +39,12 @@ class SessionsController < ApplicationController
       # Drops in session and refresh token to help initialize the API client
       client.authorization.access_token = session[:access_token]
       client.authorization.refresh_token = session[:refresh_token]
+      # raise videoid.inspect
+      # videoid="F6SNbytKCvU"
       # Makes calls to the Youtube Data API to retrieve the rest of the data
       result=YtAnalyticsCall.traffic_call(client, yt_stuff, videoid)
-      # raise result.inspect
       render :json => result
-
+     
   end
   def destroy
     session[:user_id] = nil
@@ -101,8 +104,4 @@ class SessionsController < ApplicationController
       client.authorization.access_token = session[:access_token]
       client.authorization.refresh_token = session[:refresh_token]
 
-      # client.authorization.update_token!(
-      #   access_token: current_user[:access_token],
-      #   refresh_token: current_user[:refresh_token] # may not be necessary
-      #   )
 end

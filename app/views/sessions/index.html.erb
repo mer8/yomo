@@ -1,8 +1,8 @@
-<button id="test" data-channel="">fadsfds</button>
 <main>
 <input id="searchBox" placeholder="Search, or say Google" x-webkit-speech autocomplete="off" />
 
-<header></header>
+<header>
+</header>
 
 	<% for i in @youtubeDataAPI %>
 	<section class="card" id="<%= "vid" +  i['id']%>" data-channel= "<%=i['id']%>" >
@@ -12,17 +12,10 @@
 		<div class="thumbnails">
 			<a href = "<%= i["url"] %>"><%= image_tag(i["thumbnails"]) %></a>
 		</div>
-		<h2><a href = "<%= i["url"] %>"><%= i["url"] %></a></h2>
   </section>
 
-  <div class="card">
-fasdfasdfs
-<!--       <h2>Total Views: <%#= i["totalViews"] %></h2>
-      <h2>Average View Duration: <%#= i["averageViewDuration"] %></h2>
-      <h2>Average View Percentage: <%#= i["averageViewPercentage"] %>%</h2>
-      <h2>Traffic from Facebook: <%#= i["facebookViews"] %></h2>
-      <h2>Traffic from Twitter: <%#= i["twitterViews"] %></h2>
- -->  </div>
+  <div class="analytics" id="<%= "ana" +  i['id']%>">
+  </div>
 
   <div class="swiperight" id="<%= "eml" +  i['id']%>">
     <%= form_for @message, :remote=>true, :url => contact_path do |form| %>

@@ -4,6 +4,8 @@ group :production do
 	gem 'rails_12factor'
 end
 
+gem 'pry'
+
 # Gems to authorize users using Omniauth 2
 gem "omniauth-google-oauth2"
 gem 'haml'
