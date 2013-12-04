@@ -104,4 +104,52 @@ class SessionsController < ApplicationController
       client.authorization.access_token = session[:access_token]
       client.authorization.refresh_token = session[:refresh_token]
 
+      # client.authorization.update_token!(
+      #   access_token: current_user[:access_token],
+      #   refresh_token: current_user[:refresh_token] # may not be necessary
+      #   )
+
+###############################################################################
+channels_response = client.execute!(
+  :api_method => youtube.channels.list,
+  :parameters => {
+    :mine => true,
+    :part => 'contentDetails',
+    # :fields => 'snippet(title)'
+  }
+)
+dataAPIparsed = channels_response.data.items.to_json
+dataAPIparsed = JSON.parse(dataAPIparsed)
+  # dataAPIparsed.each do |channel|
+
+uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
+
+  playlistitems_response = client.execute!(
+    :api_method => youtube.playlist_items.list,
+    :parameters => {
+      :playlistId => dataAPIparsed[0]['contentDetails']['relatedPlaylists']['uploads'],
+      :part => 'snippet',
+      :maxResults => 10
+    }
+  )
+
+#   pts "Videos in list #{uploads_list_id}"
+  @youtubeDataAPI =[]
+  @dataIDs = []
+  playlistitems_response.data.items.each do |playlist_item|
+    @hash = Hash["title" => "",
+              "id" => "",
+              "url" => "",
+              "thumbnails" => "" ]
+
+    @hash['title'] = playlist_item['snippet']['title']
+    @hash['id'] = playlist_item['snippet']['resourceId']['videoId']
+    @dataIDs << playlist_item['snippet']['resourceId']['videoId']
+    @hash['url'] = 'http://www.youtube.com/watch?v='+playlist_item['snippet']['resourceId']['videoId'].to_s
+    @hash['thumbnails'] = JSON.parse(playlist_item.to_json)['snippet']['thumbnails']['medium']['url']
+    @youtubeDataAPI << @hash
+  end
+   
+  end
+
 end
