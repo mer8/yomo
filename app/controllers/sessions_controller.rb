@@ -70,7 +70,7 @@ class SessionsController < ApplicationController
       "start-date"=>"2011-01-01", "end-date"=>"2013-11-11", "start-index"=>1, 
       "max-results"=>5, :sort=>"-views", 
       :help=>false, 
-      :ids=>"channel==UCHjzmXcM52GFvKQxsSEuZ-g"}
+      :ids=>"channel==xyz"}
     @opts = opts
 
     # Parameters to get Average Minutes Watched and Average Percentage
@@ -80,7 +80,7 @@ class SessionsController < ApplicationController
       "end-date"=>"2013-11-11", 
       "start-index"=>1, 
       "max-results"=>5, 
-      :help=>false, :ids=>"channel==UCHjzmXcM52GFvKQxsSEuZ-g"}
+      :help=>false, :ids=>"channel==xyz"}
 
     # Initialize the client, Youtube, and Youtube Analytics
     client = Google::APIClient.new
@@ -118,6 +118,8 @@ channels_response = client.execute!(
     # :fields => 'snippet(title)'
   }
 )
+# puts channels_response.inspect
+
 dataAPIparsed = channels_response.data.items.to_json
 dataAPIparsed = JSON.parse(dataAPIparsed)
   # dataAPIparsed.each do |channel|
@@ -136,16 +138,26 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
 #   pts "Videos in list #{uploads_list_id}"
   @youtubeDataAPI =[]
   @dataIDs = []
+  is_first = true
   playlistitems_response.data.items.each do |playlist_item|
+    pli = playlist_item['snippet']
+    c = Channel.find_by(yt_channel_id: pli['channelId'])
+    if is_first
+      if !c
+        c = Channel.create(yt_channel_id: pli["channelId"], name: pli["channelTitle"])
+      end
+      is_first = false
+    end
+    puts playlist_item.inspect
     @hash = Hash["title" => "",
               "id" => "",
               "url" => "",
               "thumbnails" => "" ]
 
-    @hash['title'] = playlist_item['snippet']['title']
-    @hash['id'] = playlist_item['snippet']['resourceId']['videoId']
-    @dataIDs << playlist_item['snippet']['resourceId']['videoId']
-    @hash['url'] = 'http://www.youtube.com/watch?v='+playlist_item['snippet']['resourceId']['videoId'].to_s
+    @hash['title'] = pli['title']
+    @hash['id'] = pli['resourceId']['videoId']
+    @dataIDs << pli['resourceId']['videoId']
+    @hash['url'] = 'http://www.youtube.com/watch?v='+pli['resourceId']['videoId'].to_s
     @hash['thumbnails'] = JSON.parse(playlist_item.to_json)['snippet']['thumbnails']['medium']['url']
     @youtubeDataAPI << @hash
   end

@@ -11,20 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131123234109) do
+ActiveRecord::Schema.define(version: 20131205005726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "categories", force: true do |t|
-    t.string   "category_model"
+  create_table "channels", force: true do |t|
+    t.string   "name"
+    t.string   "yt_channel_id"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "fucks", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  add_index "channels", ["user_id"], name: "index_channels_on_user_id", using: :btree
+
+  create_table "channels_users", id: false, force: true do |t|
+    t.integer "channel_id", null: false
+    t.integer "user_id",    null: false
   end
 
   create_table "sessions", force: true do |t|
@@ -57,7 +61,6 @@ ActiveRecord::Schema.define(version: 20131123234109) do
     t.string   "refresh_token"
     t.string   "access_token"
     t.string   "expires"
-    t.string   "channel_id"
   end
 
   create_table "videos", force: true do |t|
@@ -66,7 +69,12 @@ ActiveRecord::Schema.define(version: 20131123234109) do
     t.integer  "length"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "video_id"
+    t.integer  "total_views"
+    t.integer  "avg_view_duration"
+    t.integer  "avg_view_pct"
+    t.integer  "fb_views"
+    t.integer  "twitter_views"
+    t.string   "video_title"
     t.string   "thumbnail"
   end
 
