@@ -43,6 +43,9 @@ class SessionsController < ApplicationController
       # videoid="F6SNbytKCvU"
       # Makes calls to the Youtube Data API to retrieve the rest of the data
       result=YtAnalyticsCall.traffic_call(client, yt_stuff, videoid)
+
+      v = Video.create(fb_views: result["facebook"], twitter_views: result["twitter"], total_views: result["views"], avg_view_duration: result["averageViewDuration"], avg_view_pct: result["averageViewPercentage"])
+
       render :json => result
      
   end
@@ -118,7 +121,9 @@ channels_response = client.execute!(
     # :fields => 'snippet(title)'
   }
 )
-# puts channels_response.inspect
+# puts "*********************************BARF******************" + channels_response.inspect
+
+# channels_response.data
 
 dataAPIparsed = channels_response.data.items.to_json
 dataAPIparsed = JSON.parse(dataAPIparsed)
@@ -138,6 +143,7 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
 #   pts "Videos in list #{uploads_list_id}"
   @youtubeDataAPI =[]
   @dataIDs = []
+  # This stores stuff to the channels table
   is_first = true
   playlistitems_response.data.items.each do |playlist_item|
     pli = playlist_item['snippet']
@@ -146,9 +152,11 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
       if !c
         c = Channel.create(yt_channel_id: pli["channelId"], name: pli["channelTitle"])
       end
-      is_first = false
+      is_first = false;
     end
-    puts playlist_item.inspect
+
+    
+    # puts playlist_item.inspect
     @hash = Hash["title" => "",
               "id" => "",
               "url" => "",

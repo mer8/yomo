@@ -12,7 +12,7 @@ $(document).ready(function(){
 
             $(this).css("display", "none");
             var anaId = $('#ana' + $(this).attr("id").substring(3,999))
-            anaId.html("<h2> Total Views: <span class='totalViews'>"+data[2][0]+ "</span></h2>" +"<h2> Average View Duration: <span class='averageViewDuration'>"+data[2][1] + "</span></h2>" + "<h2> Average View %: <span class='averageViewPercentage'>"+data[2][2].toFixed(2) + "% </span></h2>"+ "<h2> Facebook: <span class='facebookViews'>"+data[0] + "</span></h2>"+"<h2> Twitter: <span class='twitterViews'>"+data[1] + "</span></h2>");
+            anaId.html("<h2> Total Views: <span class='totalViews'>"+data["views"]+ "</span></h2>" +"<h2> Average View Duration: <span class='averageViewDuration'>"+data["averageViewDuration"] + "</span></h2>" + "<h2> Average View %: <span class='averageViewPercentage'>"+data["averageViewPercentage"].toFixed(2) + "% </span></h2>"+ "<h2> Facebook: <span class='facebookViews'>"+data["facebook"] + "</span></h2>"+"<h2> Twitter: <span class='twitterViews'>"+data["twitter"] + "</span></h2>");
             $('#ana' + $(this).attr("id").substring(3,999)).css("display", "block"); 
           }
         });

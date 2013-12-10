@@ -1,6 +1,6 @@
 class YtAnalyticsCall
 	def self.traffic_call(client, yt_stuff, videoid)
-	    @anaTotal=[]
+	    @anaTotal={}
 
 		youtube_analytics = client.discovered_api('youtubeAnalytics', 'v1')   
 
@@ -18,7 +18,7 @@ class YtAnalyticsCall
 		end
 
 		result= data.flatten
-		@anaTotal << result.map {|x| Integer(x) rescue nil }.compact.sum
+		@anaTotal["facebook"] = result.map {|x| Integer(x) rescue nil }.compact.sum
 
 	    # Traffic from Twitter
 		data = analytics_response.data.rows.select do |e| 
@@ -27,7 +27,7 @@ class YtAnalyticsCall
 		result= data.flatten
 
 
-		@anaTotal << result.map {|x| Integer(x) rescue nil }.compact.sum
+		@anaTotal["twitter"] = result.map {|x| Integer(x) rescue nil }.compact.sum
 
 		yt_stuff[:popts][:ids] = yt_stuff[:opts][:ids]
 		yt_stuff[:popts][:filters]= "video==" + videoid.to_s
@@ -37,7 +37,12 @@ class YtAnalyticsCall
 			:api_method => youtube_analytics.reports.query,
 			:parameters => yt_stuff[:popts]
 		)
-		@anaTotal << analytics_response.data.rows.flatten
+
+		@anaTotal["views"] = analytics_response.data.rows.flatten[0]
+		@anaTotal["averageViewDuration"] = analytics_response.data.rows.flatten[1]
+		@anaTotal["averageViewPercentage"] = analytics_response.data.rows.flatten[2] 
+		# puts @anaTotal
+
 		@anaTotal
 	end
 end
