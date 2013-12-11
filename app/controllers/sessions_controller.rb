@@ -44,11 +44,18 @@ class SessionsController < ApplicationController
       # Makes calls to the Youtube Data API to retrieve the rest of the data
       result=YtAnalyticsCall.traffic_call(client, yt_stuff, videoid)
 
-      v = Video.create(fb_views: result["facebook"], twitter_views: result["twitter"], total_views: result["views"], avg_view_duration: result["averageViewDuration"], avg_view_pct: result["averageViewPercentage"])
+      v = Video.find_or_initialize_by(video_id: videoid)
+      v.fb_views = result["facebook"]
+      v.twitter_views = result["twitter"]
+      v.total_views = result["views"]
+      v.avg_view_duration = result["averageViewDuration"]
+      v.avg_view_pct = result["averageViewPercentage"]
+      v.save
+
 
       render :json => result
-     
   end
+
   def destroy
     session[:user_id] = nil
     redirect_to root_url, :notice => "Signed out!"
@@ -168,8 +175,16 @@ uploads_list_id = dataAPIparsed[0]['contentDetails']['uploads']
     @hash['url'] = 'http://www.youtube.com/watch?v='+pli['resourceId']['videoId'].to_s
     @hash['thumbnails'] = JSON.parse(playlist_item.to_json)['snippet']['thumbnails']['medium']['url']
     @youtubeDataAPI << @hash
-  end
+
+    t = Video.find_or_initialize_by(video_id: @hash['id'])
+    t.title = @hash['title']
+    t.save
    
+
+
+
+  end
+
   end
 
 end
